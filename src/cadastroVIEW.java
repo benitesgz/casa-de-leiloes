@@ -1,3 +1,115 @@
+import javax.swing.JOptionPane;
+
+public class cadastroVIEW extends javax.swing.JFrame {
+
+    public cadastroVIEW() {
+        initComponents();
+    }
+
+    // Método para inicializar os componentes da interface gráfica
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        nomeProduto = new javax.swing.JTextField();
+        valorProduto = new javax.swing.JTextField();
+        btnSalvar = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setText("Nome do Produto");
+        jLabel2.setText("Valor do Produto");
+
+        btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
+
+        // Layout do formulário (simplificado)
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(nomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(valorProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSalvar))
+                .addContainerGap(50, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(valorProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSalvar)
+                .addContainerGap(50, Short.MAX_VALUE))
+        );
+
+        pack();
+    }
+
+    // Método que será chamado ao clicar no botão Salvar
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {
+        String nome = nomeProduto.getText();
+        String valor = valorProduto.getText();
+
+        // Validação simples
+        if (nome.isEmpty() || valor.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            // Convertendo o valor para um formato numérico
+            double valorProdutoDouble = Double.parseDouble(valor);
+
+            // Criando um objeto Produto para salvar no banco de dados
+            ProdutosDTO produto = new ProdutosDTO();
+            produto.setNome(nome);
+            produto.setValor(valorProdutoDouble);
+
+            // Criando o objeto ProdutosDAO para interagir com o banco de dados
+            ProdutosDAO produtosDAO = new ProdutosDAO();
+            boolean sucesso = produtosDAO.salvarProduto(produto);
+
+            // Exibindo mensagem de sucesso ou falha
+            if (sucesso) {
+                JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                limparCampos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar o produto.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "O valor informado é inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Método para limpar os campos de cadastro após salvar
+    private void limparCampos() {
+        nomeProduto.setText("");
+        valorProduto.setText("");
+    }
+
+    // Declaração de componentes (simplificada)
+    private javax.swing.JButton btnSalvar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField nomeProduto;
+    private javax.swing.JTextField valorProduto;
+}
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
